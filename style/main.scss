@@ -254,12 +254,13 @@ hr {
     position: absolute;
     left: 530px;
     top: 0;
-    width: 200px;
+    width: 300px;
     height: auto;
   }
   .time-number {
     float:left;
     text-align:right;
+    font-weight:bold;
     width: 70px;
     padding: 5px;
     clear: left;
@@ -267,7 +268,7 @@ hr {
   .time-value {
     float:left;
     text-align:left;
-    width: 50px;
+    width: 200px;
     padding: 5px;
   }
 

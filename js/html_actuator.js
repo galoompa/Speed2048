@@ -44,12 +44,44 @@ HTMLActuator.prototype.updateBestTimes = function (bestTimes) {
     var tnumber = document.createElement("div");
     var vnumber = document.createElement("div");
     tnumber.classList.add("time-number");
-    tnumber.textContent = timeKey;
+    tnumber.textContent = parseInt(timeKey).toString();
     vnumber.classList.add("time-value");
-    vnumber.textContent = bestTimes[timeKey];
+    vnumber.textContent = this.formatTime(bestTimes[timeKey]);
     this.bestTimesContainer.appendChild(tnumber);
     this.bestTimesContainer.appendChild(vnumber);
   }
+};
+
+HTMLActuator.prototype.formatTime = function(milliseconds) {
+  /*var h = Math.floor(milliseconds / 3600000);
+  var m = Math.floor(milliseconds / 60000) % 60;
+  var s = Math.floor(milliseconds / 1000) % 60;
+  var ms = milliseconds % 1000;
+  var time = "";
+  if (h > 0) {
+    time = h.toString + ":";
+  }
+  var m_str = m.toString();
+  while (m_str.length < 2)
+    m_str = "0" + m_str;
+  var s_str = s.toString();
+  while (s_str.length < 2)
+    s_str = "0" + s_str;
+  var ms_str = ms.toString();
+  while (ms_str.length < 3)
+    ms_str = "0" + ms_str;
+  time += m_str + ":" + s_str + "." + ms_str;
+  return time;*/
+  var h = Math.floor(milliseconds / 3600000);
+  var m = Math.floor(milliseconds / 60000) % 60;
+  var s = (Math.round(milliseconds) / 1000) % 60;
+  time = "";
+  if (h > 0)
+    time += h.toString() + "h ";
+  if (m > 0 || h > 0)
+    time += m.toString() + "m ";
+  time += s.toFixed(3) + "s";
+  return time;
 };
 
 // Continues the game (both restart and keep playing)
