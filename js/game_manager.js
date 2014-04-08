@@ -47,12 +47,14 @@ GameManager.prototype.setup = function () {
     this.over        = previousState.over;
     this.won         = previousState.won;
     this.keepPlaying = previousState.keepPlaying;
+    this.startTime   = new Date(previousState.startTime);
   } else {
     this.grid        = new Grid(this.size);
     this.score       = 0;
     this.over        = false;
     this.won         = false;
     this.keepPlaying = false;
+    this.startTime   = new Date();
 
     // Add the initial tiles
     this.addStartTiles();
@@ -97,7 +99,8 @@ GameManager.prototype.actuate = function () {
     over:       this.over,
     won:        this.won,
     bestScore:  this.storageManager.getBestScore(),
-    terminated: this.isGameTerminated()
+    terminated: this.isGameTerminated(),
+    bestTimes:  this.storageManager.getBestTimes()
   });
 
 };
@@ -109,7 +112,8 @@ GameManager.prototype.serialize = function () {
     score:       this.score,
     over:        this.over,
     won:         this.won,
-    keepPlaying: this.keepPlaying
+    keepPlaying: this.keepPlaying,
+    startTime:   this.startTime
   };
 };
 
@@ -169,6 +173,27 @@ GameManager.prototype.move = function (direction) {
 
           // Update the score
           self.score += merged.value;
+
+          // Check for best times at values
+          var timeIndex = self.valueToString(merged.value);
+          var timeToValue = (new Date() - self.startTime);
+          var bestTimes = self.storageManager.getBestTimes();
+          if (bestTimes) {
+            if (bestTimes[timeIndex]) {
+              if (bestTimes[timeIndex] > timeToValue) {
+                bestTimes[timeIndex] = timeToValue;
+              }
+            } else {
+              bestTimes[timeIndex] = timeToValue;
+            }
+          } else {
+            bestTimes = {};
+            bestTimes[timeIndex] = timeToValue;
+          }
+
+          // TODO: perhaps don't update unless change occurs?
+          self.storageManager.setBestTimes(bestTimes);
+
 
           // The mighty 2048 tile
           if (merged.value === 2048) self.won = true;
@@ -273,4 +298,8 @@ GameManager.prototype.tileMatchesAvailable = function () {
 
 GameManager.prototype.positionsEqual = function (first, second) {
   return first.x === second.x && first.y === second.y;
+};
+
+GameManager.prototype.valueToString = function (value) {
+  return ("00000" + value.toString()).slice(-5);
 };
