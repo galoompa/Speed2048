@@ -1,8 +1,9 @@
 function HTMLActuator() {
   this.tileContainer    = document.querySelector(".tile-container");
-  this.scoreContainer   = document.querySelector(".score-container");
-  this.bestContainer    = document.querySelector(".best-container");
+  //this.scoreContainer   = document.querySelector(".score-container");
+  //this.bestContainer    = document.querySelector(".best-container");
   this.messageContainer = document.querySelector(".game-message");
+  this.bestTimesContainer = document.querySelector(".time-container");
 
   this.score = 0;
 }
@@ -21,8 +22,10 @@ HTMLActuator.prototype.actuate = function (grid, metadata) {
       });
     });
 
-    self.updateScore(metadata.score);
-    self.updateBestScore(metadata.bestScore);
+    //self.updateScore(metadata.score);
+    //self.updateBestScore(metadata.bestScore);
+
+    self.updateBestTimes(metadata.bestTimes);
 
     if (metadata.terminated) {
       if (metadata.over) {
@@ -33,6 +36,20 @@ HTMLActuator.prototype.actuate = function (grid, metadata) {
     }
 
   });
+};
+
+HTMLActuator.prototype.updateBestTimes = function (bestTimes) {
+  this.clearContainer(this.bestTimesContainer);
+  for (var timeKey in bestTimes) {
+    var tnumber = document.createElement("div");
+    var vnumber = document.createElement("div");
+    tnumber.classList.add("time-number");
+    tnumber.textContent = timeKey;
+    vnumber.classList.add("time-value");
+    vnumber.textContent = bestTimes[timeKey];
+    this.bestTimesContainer.appendChild(tnumber);
+    this.bestTimesContainer.appendChild(vnumber);
+  }
 };
 
 // Continues the game (both restart and keep playing)
